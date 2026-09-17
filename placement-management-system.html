@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Placement Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F2A3D;
+    --navy-2:#173B54;
+    --paper:#EEF2F6;
+    --panel:#FFFFFF;
+    --line:#D7DEE6;
+    --ink:#16232E;
+    --muted:#5B6B79;
+    --gold:#B8862E;
+    --gold-2:#D9A648;
+    --green:#2B7A4B;
+    --green-bg:#E6F3EA;
+    --amber:#9C6B12;
+    --amber-bg:#FBF0DC;
+    --red:#B23A3A;
+    --red-bg:#FBEAEA;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(15,42,61,0.06), 0 4px 14px rgba(15,42,61,0.06);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:'Inter',system-ui,sans-serif; line-height:1.5;}
+  h1,h2,h3{font-family:'Source Serif 4',Georgia,serif; margin:0; color:var(--navy);}
+
+  header.top{
+    background:linear-gradient(135deg,var(--navy) 0%, var(--navy-2) 100%);
+    color:#F1F5F8;
+    padding:34px 28px 26px;
+  }
+  .top-inner{max-width:1180px; margin:0 auto;}
+  .eyebrow-line{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;}
+  header.top h1{color:#fff; font-size:clamp(24px,3.2vw,34px); font-weight:600;}
+  header.top .tagline{color:#C7D5E0; font-size:14.5px; margin-top:6px; max-width:56ch;}
+  .reg-no-badge{font-size:12px; color:#9FB4C4; letter-spacing:.02em;}
+
+  .stats{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+    max-width:1180px; margin:22px auto 0; padding:0 28px;
+  }
+  .stat-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px 18px; box-shadow:var(--shadow);
+  }
+  .stat-card .num{font-family:'Source Serif 4',serif; font-size:28px; color:var(--navy); font-weight:600;}
+  .stat-card .label{font-size:12.5px; color:var(--muted); margin-top:2px;}
+  .stat-card.accent .num{color:var(--gold);}
+
+  main{max-width:1180px; margin:26px auto 60px; padding:0 28px; display:grid; grid-template-columns:340px 1fr; gap:22px; align-items:start;}
+
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px;}
+  .panel h2{font-size:19px; margin-bottom:4px;}
+  .panel .sub{font-size:13px; color:var(--muted); margin-bottom:16px;}
+
+  form label{display:block; font-size:12.5px; font-weight:600; color:var(--navy-2); margin:12px 0 5px;}
+  form label:first-of-type{margin-top:0;}
+  .field-error{font-size:11.5px; color:var(--red); min-height:14px; margin-top:3px;}
+  input, select{
+    width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:7px;
+    font-size:14px; font-family:'Inter',sans-serif; background:#FCFDFE; color:var(--ink);
+  }
+  input:focus, select:focus{outline:2px solid var(--gold-2); outline-offset:1px; border-color:var(--gold-2);}
+  input.invalid{border-color:var(--red);}
+
+  .form-actions{display:flex; gap:10px; margin-top:18px;}
+  button{font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; border-radius:7px; border:none; padding:10px 16px; cursor:pointer; transition:transform .08s ease, background .15s ease;}
+  button:active{transform:scale(0.98);}
+  .btn-primary{background:var(--navy); color:#fff; flex:1;}
+  .btn-primary:hover{background:var(--navy-2);}
+  .btn-ghost{background:transparent; color:var(--muted); border:1px solid var(--line);}
+  .btn-ghost:hover{background:#F1F4F7;}
+
+  .table-panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;}
+  .table-toolbar{display:flex; gap:10px; align-items:center; padding:16px 18px; border-bottom:1px solid var(--line); flex-wrap:wrap;}
+  .table-toolbar input[type="search"]{flex:1; min-width:160px;}
+  .table-toolbar select{width:auto; min-width:140px;}
+  .count-pill{font-size:12px; color:var(--muted); white-space:nowrap;}
+
+  .table-scroll{overflow-x:auto;}
+  table{width:100%; border-collapse:collapse; min-width:760px;}
+  thead th{
+    text-align:left; font-size:11.5px; letter-spacing:.02em; color:var(--muted);
+    font-weight:600; padding:10px 14px; border-bottom:1px solid var(--line); background:#F7F9FB;
+    position:sticky; top:0;
+  }
+  tbody td{padding:12px 14px; font-size:13.5px; border-bottom:1px solid #EEF1F5; vertical-align:middle;}
+  tbody tr:hover{background:#FAFBFC;}
+  .name-cell{font-weight:600; color:var(--ink);}
+  .sub-cell{font-size:12px; color:var(--muted);}
+
+  .status-chip{display:inline-block; padding:3px 10px; border-radius:999px; font-size:11.5px; font-weight:600;}
+  .status-Placed{background:var(--green-bg); color:var(--green);}
+  .status-In-Process{background:var(--amber-bg); color:var(--amber);}
+  .status-Not-Placed{background:var(--red-bg); color:var(--red);}
+
+  .row-actions{display:flex; gap:6px;}
+  .icon-btn{background:none; border:1px solid var(--line); padding:6px 10px; font-size:12px; color:var(--navy-2); border-radius:6px;}
+  .icon-btn:hover{background:#F1F4F7;}
+  .icon-btn.danger{color:var(--red); border-color:#EFD3D3;}
+  .icon-btn.danger:hover{background:var(--red-bg);}
+
+  .empty-state{padding:60px 20px; text-align:center; color:var(--muted);}
+  .empty-state h3{color:var(--navy); font-size:18px; margin-bottom:6px;}
+
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--navy); color:#fff; padding:11px 20px; border-radius:8px; font-size:13.5px;
+    opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; box-shadow:var(--shadow);
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  footer{text-align:center; padding:18px; font-size:12px; color:var(--muted);}
+
+  @media (max-width:860px){
+    main{grid-template-columns:1fr;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="eyebrow-line">
+      <h1>Placement Management System</h1>
+    </div>
+    <p class="tagline">Track student placement drives, company offers and package details in one place.</p>
+  </div>
+  <div class="stats">
+    <div class="stat-card"><div class="num" id="statTotal">0</div><div class="label">Students tracked</div></div>
+    <div class="stat-card"><div class="num" id="statPlaced">0</div><div class="label">Placed</div></div>
+    <div class="stat-card accent"><div class="num" id="statPercent">0%</div><div class="label">Placement rate</div></div>
+    <div class="stat-card accent"><div class="num" id="statAvg">0</div><div class="label">Avg. package (LPA)</div></div>
+  </div>
+</header>
+
+<main>
+  <section class="panel">
+    <h2 id="formTitle">Add student record</h2>
+    <p class="sub">Fields marked with * are required.</p>
+    <form id="recordForm" novalidate>
+      <input type="hidden" id="recordId">
+
+      <label for="name">Student name *</label>
+      <input type="text" id="name" placeholder="e.g. Chandru V">
+      <div class="field-error" id="err-name"></div>
+
+      <label for="regNo">Register number *</label>
+      <input type="text" id="regNo" placeholder="e.g. 922525205021">
+      <div class="field-error" id="err-regNo"></div>
+
+      <label for="department">Department *</label>
+      <select id="department">
+        <option value="">Select department</option>
+        <option>Information Technology</option>
+        <option>Computer Science</option>
+        <option>ECE</option>
+        <option>EEE</option>
+        <option>Mechanical</option>
+        <option>Civil</option>
+      </select>
+      <div class="field-error" id="err-department"></div>
+
+      <label for="cgpa">CGPA (0–10) *</label>
+      <input type="number" id="cgpa" step="0.01" min="0" max="10" placeholder="e.g. 8.25">
+      <div class="field-error" id="err-cgpa"></div>
+
+      <label for="email">Email *</label>
+      <input type="email" id="email" placeholder="student@example.com">
+      <div class="field-error" id="err-email"></div>
+
+      <label for="company">Company</label>
+      <input type="text" id="company" placeholder="e.g. Zoho">
+
+      <label for="package">Package offered (LPA)</label>
+      <input type="number" id="package" step="0.1" min="0" placeholder="e.g. 4.5">
+      <div class="field-error" id="err-package"></div>
+
+      <label for="status">Status *</label>
+      <select id="status">
+        <option value="Not Placed">Not Placed</option>
+        <option value="In Process">In Process</option>
+        <option value="Placed">Placed</option>
+      </select>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" id="submitBtn">Add record</button>
+        <button type="button" class="btn-ghost" id="cancelBtn" style="display:none;">Cancel</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="table-panel">
+    <div class="table-toolbar">
+      <input type="search" id="searchInput" placeholder="Search by name, register no. or company">
+      <select id="filterStatus">
+        <option value="">All statuses</option>
+        <option value="Placed">Placed</option>
+        <option value="In Process">In Process</option>
+        <option value="Not Placed">Not Placed</option>
+      </select>
+      <span class="count-pill" id="countPill">0 records</span>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Department</th>
+            <th>CGPA</th>
+            <th>Company</th>
+            <th>Package</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <h3>No records yet</h3>
+      <p>Add your first student placement record using the form on the left.</p>
+    </div>
+  </section>
+</main>
+
+<footer>Data is stored locally in this browser. Clearing browser storage will remove all records.</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var STORAGE_KEY = 'pms_records_v1';
+  var records = [];
+  var editingId = null;
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      records = raw ? JSON.parse(raw) : seedData();
+      if(!raw) save();
+    }catch(e){
+      records = seedData();
+    }
+  }
+  function save(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); }catch(e){}
+  }
+  function seedData(){
+    return [
+      {id: cryptoId(), name:'Aarthi Suresh', regNo:'922525205010', department:'Information Technology', cgpa:8.6, email:'aarthi.s@example.com', company:'Zoho Corporation', package:4.5, status:'Placed'},
+      {id: cryptoId(), name:'Praveen Kumar', regNo:'922525205033', department:'Computer Science', cgpa:7.9, email:'praveen.k@example.com', company:'', package:'', status:'In Process'},
+      {id: cryptoId(), name:'Divya Bharathi', regNo:'922525205047', department:'ECE', cgpa:9.1, email:'divya.b@example.com', company:'Wipro', package:3.8, status:'Placed'}
+    ];
+  }
+  function cryptoId(){
+    return 'r_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
+  }
+
+  // Elements
+  var form = document.getElementById('recordForm');
+  var tableBody = document.getElementById('tableBody');
+  var emptyState = document.getElementById('emptyState');
+  var searchInput = document.getElementById('searchInput');
+  var filterStatus = document.getElementById('filterStatus');
+  var countPill = document.getElementById('countPill');
+  var formTitle = document.getElementById('formTitle');
+  var submitBtn = document.getElementById('submitBtn');
+  var cancelBtn = document.getElementById('cancelBtn');
+  var toast = document.getElementById('toast');
+
+  var fields = ['name','regNo','department','cgpa','email','company','package','status'];
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, 1800);
+  }
+
+  function clearErrors(){
+    ['name','regNo','department','cgpa','email','package'].forEach(function(f){
+      document.getElementById('err-'+f).textContent = '';
+      document.getElementById(f).classList.remove('invalid');
+    });
+  }
+
+  function validate(data){
+    var errors = {};
+    if(!data.name.trim()) errors.name = 'Name is required.';
+    if(!data.regNo.trim()) errors.regNo = 'Register number is required.';
+    else if(records.some(function(r){ return r.regNo === data.regNo.trim() && r.id !== editingId; }))
+      errors.regNo = 'This register number already exists.';
+    if(!data.department) errors.department = 'Select a department.';
+    if(data.cgpa === '' || isNaN(data.cgpa)) errors.cgpa = 'Enter a valid CGPA.';
+    else if(data.cgpa < 0 || data.cgpa > 10) errors.cgpa = 'CGPA must be between 0 and 10.';
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!data.email.trim()) errors.email = 'Email is required.';
+    else if(!emailPattern.test(data.email.trim())) errors.email = 'Enter a valid email address.';
+    if(data.package !== '' && (isNaN(data.package) || data.package < 0)) errors.package = 'Package must be a positive number.';
+    return errors;
+  }
+
+  function readForm(){
+    return {
+      name: document.getElementById('name').value,
+      regNo: document.getElementById('regNo').value,
+      department: document.getElementById('department').value,
+      cgpa: document.getElementById('cgpa').value === '' ? '' : parseFloat(document.getElementById('cgpa').value),
+      email: document.getElementById('email').value,
+      company: document.getElementById('company').value.trim(),
+      package: document.getElementById('package').value === '' ? '' : parseFloat(document.getElementById('package').value),
+      status: document.getElementById('status').value
+    };
+  }
+
+  function resetForm(){
+    form.reset();
+    document.getElementById('status').value = 'Not Placed';
+    editingId = null;
+    document.getElementById('recordId').value = '';
+    formTitle.textContent = 'Add student record';
+    submitBtn.textContent = 'Add record';
+    cancelBtn.style.display = 'none';
+    clearErrors();
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    clearErrors();
+    var data = readForm();
+    var errors = validate(data);
+    var hasErrors = Object.keys(errors).length > 0;
+    if(hasErrors){
+      Object.keys(errors).forEach(function(f){
+        document.getElementById('err-'+f).textContent = errors[f];
+        document.getElementById(f).classList.add('invalid');
+      });
+      return;
+    }
+    if(editingId){
+      var idx = records.findIndex(function(r){ return r.id === editingId; });
+      records[idx] = Object.assign({id: editingId}, data);
+      showToast('Record updated.');
+    }else{
+      records.push(Object.assign({id: cryptoId()}, data));
+      showToast('Record added.');
+    }
+    save();
+    resetForm();
+    render();
+  });
+
+  cancelBtn.addEventListener('click', resetForm);
+
+  function startEdit(id){
+    var r = records.find(function(x){ return x.id === id; });
+    if(!r) return;
+    editingId = id;
+    document.getElementById('recordId').value = id;
+    document.getElementById('name').value = r.name;
+    document.getElementById('regNo').value = r.regNo;
+    document.getElementById('department').value = r.department;
+    document.getElementById('cgpa').value = r.cgpa;
+    document.getElementById('email').value = r.email;
+    document.getElementById('company').value = r.company || '';
+    document.getElementById('package').value = r.package === '' ? '' : r.package;
+    document.getElementById('status').value = r.status;
+    formTitle.textContent = 'Edit student record';
+    submitBtn.textContent = 'Save changes';
+    cancelBtn.style.display = 'inline-block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function deleteRecord(id){
+    var r = records.find(function(x){ return x.id === id; });
+    if(!r) return;
+    if(!confirm('Delete the record for ' + r.name + '? This cannot be undone.')) return;
+    records = records.filter(function(x){ return x.id !== id; });
+    save();
+    if(editingId === id) resetForm();
+    render();
+    showToast('Record deleted.');
+  }
+
+  function statusClass(status){
+    return 'status-' + status.replace(/\s+/g,'-');
+  }
+
+  function matchesFilters(r){
+    var term = searchInput.value.trim().toLowerCase();
+    var statusF = filterStatus.value;
+    var matchesTerm = !term ||
+      r.name.toLowerCase().indexOf(term) > -1 ||
+      r.regNo.toLowerCase().indexOf(term) > -1 ||
+      (r.company||'').toLowerCase().indexOf(term) > -1;
+    var matchesStatus = !statusF || r.status === statusF;
+    return matchesTerm && matchesStatus;
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function render(){
+    var visible = records.filter(matchesFilters);
+    tableBody.innerHTML = '';
+    emptyState.style.display = records.length === 0 ? 'block' : 'none';
+
+    visible.forEach(function(r){
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td><div class="name-cell">' + escapeHtml(r.name) + '</div><div class="sub-cell">' + escapeHtml(r.regNo) + '</div></td>' +
+        '<td>' + escapeHtml(r.department) + '</td>' +
+        '<td>' + escapeHtml(r.cgpa) + '</td>' +
+        '<td>' + (r.company ? escapeHtml(r.company) : '<span class="sub-cell">—</span>') + '</td>' +
+        '<td>' + (r.package !== '' && r.package !== undefined && r.package !== null ? escapeHtml(r.package) + ' LPA' : '<span class="sub-cell">—</span>') + '</td>' +
+        '<td><span class="status-chip ' + statusClass(r.status) + '">' + escapeHtml(r.status) + '</span></td>' +
+        '<td><div class="row-actions">' +
+          '<button class="icon-btn" data-action="edit" data-id="' + r.id + '">Edit</button>' +
+          '<button class="icon-btn danger" data-action="delete" data-id="' + r.id + '">Delete</button>' +
+        '</div></td>';
+      tableBody.appendChild(tr);
+    });
+
+    countPill.textContent = visible.length + (visible.length === 1 ? ' record' : ' records') +
+      (visible.length !== records.length ? ' (of ' + records.length + ')' : '');
+
+    updateStats();
+  }
+
+  tableBody.addEventListener('click', function(e){
+    var btn = e.target.closest('button[data-action]');
+    if(!btn) return;
+    var id = btn.getAttribute('data-id');
+    if(btn.getAttribute('data-action') === 'edit') startEdit(id);
+    if(btn.getAttribute('data-action') === 'delete') deleteRecord(id);
+  });
+
+  searchInput.addEventListener('input', render);
+  filterStatus.addEventListener('change', render);
+
+  function updateStats(){
+    var total = records.length;
+    var placed = records.filter(function(r){ return r.status === 'Placed'; });
+    var percent = total ? Math.round((placed.length/total)*100) : 0;
+    var packages = placed.map(function(r){ return parseFloat(r.package); }).filter(function(p){ return !isNaN(p); });
+    var avg = packages.length ? (packages.reduce(function(a,b){return a+b;},0)/packages.length).toFixed(2) : '0';
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statPlaced').textContent = placed.length;
+    document.getElementById('statPercent').textContent = percent + '%';
+    document.getElementById('statAvg').textContent = avg;
+  }
+
+  load();
+  resetForm();
+  render();
+})();
+</script>
+</body>
+</html>
