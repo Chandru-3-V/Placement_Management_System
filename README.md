@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Placement Management System
 
 A mini CRUD-based web application built for the VSB Skill Vault "Mini Web Application" activity.
@@ -62,3 +63,6 @@ This keeps the project easy to run and demonstrate anywhere, while still impleme
 - Add authentication for placement-cell staff
 - Add CSV/Excel export of placement records
 - Add pagination for large batches of students
+=======
+# Placement_Management_System
+>>>>>>> c42beff509f35e2024737e16dd2d88ea3f5862c4
