@@ -63,4 +63,3 @@ This keeps the project easy to run and demonstrate anywhere, while still impleme
 - Add authentication for placement-cell staff
 - Add CSV/Excel export of placement records
 - Add pagination for large batches of students
-=======
