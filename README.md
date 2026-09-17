@@ -64,4 +64,3 @@ This keeps the project easy to run and demonstrate anywhere, while still impleme
 - Add CSV/Excel export of placement records
 - Add pagination for large batches of students
 =======
-# Placement_Management_System
